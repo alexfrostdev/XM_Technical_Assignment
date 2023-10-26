@@ -1,4 +1,4 @@
-package com.example.xmtechnicalassignment.ui.theme
+package com.example.xmtechnicalassignment.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

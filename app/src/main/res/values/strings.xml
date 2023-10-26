@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">XM Technical Assignment</string>
+
+    <string name="main_welcome">Welcome</string>
+    <string name="main_start_survey">Start survey</string>
+
+    <string name="questions_back">Back</string>
+    <string name="questions_previous">Previous</string>
+    <string name="questions_next">Next</string>
+    <string name="questions_question_template">Question %s</string>
 </resources>

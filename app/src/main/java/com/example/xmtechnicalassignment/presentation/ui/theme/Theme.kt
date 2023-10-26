@@ -1,4 +1,4 @@
-package com.example.xmtechnicalassignment.ui.theme
+package com.example.xmtechnicalassignment.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
