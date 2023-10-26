@@ -8,4 +8,8 @@
     <string name="questions_previous">Previous</string>
     <string name="questions_next">Next</string>
     <string name="questions_question_template">Question %s</string>
+
+    <string name="message_success">Success!</string>
+    <string name="message_failure">Failure!</string>
+    <string name="message_retry">Retry</string>
 </resources>
