@@ -1,6 +1,5 @@
 package com.example.xmtechnicalassignment.presentation.navigation
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -17,19 +16,19 @@ import com.example.xmtechnicalassignment.presentation.ui.questions.QuestionsScre
  * @param startDestination the start destination of the graph
  */
 @Composable
-fun NavGraph(startDestination: String = "home") {
+fun NavGraph(startDestination: String = Screen.Home.route) {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    val actions = remember(navController) { Actions(navController, context) }
+    val actions = remember(navController) { Actions(navController) }
 
     NavHost(navController = navController, startDestination = startDestination) {
 
-        composable("home") {
+        composable(Screen.Home.route) {
             MainScreen(onOpenQuestions = actions.openQuestions)
         }
 
-        composable("questions") {
+        composable(Screen.Questions.route) {
             QuestionsScreen(
                 onUpPress = actions.popBackStack,
             )
@@ -37,13 +36,12 @@ fun NavGraph(startDestination: String = "home") {
     }
 }
 
-internal class Actions(
+class Actions(
     private val navController: NavHostController,
-    private val context: Context
 ) {
 
     val openQuestions: () -> Unit = {
-        navController.navigate("questions")
+        navController.navigate(Screen.Questions.route)
     }
 
     val navigateUp: () -> Unit = {
