@@ -20,7 +20,10 @@ import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssign
 fun PreviewQuestionsAppBar() {
 
     XMTechnicalAssignmentTheme {
-        QuestionsAppBar(onUpPress = {})
+        QuestionsAppBar(
+            info = QuestionsPagerInfo(currentPage = 2, pageCount = 13),
+            onUpPress = {}
+        )
     }
 }
 
@@ -31,10 +34,18 @@ fun PreviewQuestionsAppBar() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuestionsAppBar(onUpPress: () -> Unit) {
+fun QuestionsAppBar(
+    info: QuestionsPagerInfo, onUpPress: () -> Unit,
+    onPageChanged: (newPage: Int) -> Unit = {}
+) {
     TopAppBar(
         title = {
-            Text(stringResource(R.string.questions_question_template, ""))
+            Text(
+                text = stringResource(
+                    R.string.questions_question_template,
+                    "${info.currentPage + 1}/${info.pageCount}"
+                )
+            )
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = QuestionBackgroundColor),
         navigationIcon = {
@@ -46,11 +57,24 @@ fun QuestionsAppBar(onUpPress: () -> Unit) {
             }
         },
         actions = {
-            IconButton(onClick = {}, Modifier.padding(horizontal = 0.dp)) {
+            IconButton(
+                onClick = { onPageChanged.invoke(info.currentPage - 1) },
+                Modifier.padding(horizontal = 0.dp),
+                enabled = info.currentPage != 0
+            ) {
                 Text(text = stringResource(R.string.questions_previous), fontSize = 12.sp, maxLines = 1)
             }
-            IconButton(onClick = {}, Modifier.padding(horizontal = 0.dp)) {
+            IconButton(
+                onClick = { onPageChanged.invoke(info.currentPage + 1) },
+                Modifier.padding(horizontal = 0.dp),
+                enabled = info.currentPage + 1 != info.pageCount
+            ) {
                 Text(text = stringResource(R.string.questions_next), fontSize = 12.sp, maxLines = 1)
             }
         })
 }
+
+data class QuestionsPagerInfo(
+    val currentPage: Int,
+    val pageCount: Int,
+)

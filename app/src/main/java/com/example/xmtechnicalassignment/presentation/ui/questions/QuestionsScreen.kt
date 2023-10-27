@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,7 +13,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,14 +23,12 @@ import androidx.navigation.compose.composable
 import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.data.remote.entity.Question
 import com.example.xmtechnicalassignment.data.remote.entity.SubmitQuestion
-import com.example.xmtechnicalassignment.presentation.component.FailureContent
-import com.example.xmtechnicalassignment.presentation.component.LoadingContent
-import com.example.xmtechnicalassignment.presentation.component.QuestionsAppBar
-import com.example.xmtechnicalassignment.presentation.component.SuccessContent
+import com.example.xmtechnicalassignment.presentation.component.*
 import com.example.xmtechnicalassignment.presentation.navigation.Actions
 import com.example.xmtechnicalassignment.presentation.navigation.Screen
 import com.example.xmtechnicalassignment.presentation.ui.theme.QuestionBackgroundColor
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -69,7 +67,7 @@ fun NavGraphBuilder.addQuestions(actions: Actions) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun QuestionsContent(
     state: QuestionsScreenState,
@@ -77,11 +75,32 @@ fun QuestionsContent(
     onSubmitQuestion: (SubmitQuestion) -> Unit,
     onRetryClick: (SubmitQuestion) -> Unit = {},
 ) {
+    val pagerState = rememberPagerState()
+    val info by remember {
+        derivedStateOf {
+            QuestionsPagerInfo(
+                currentPage = pagerState.currentPage,
+                pageCount = state.questions.size,
+            )
+        }
+    }
+    val coroutineScope = rememberCoroutineScope()
+
     Scaffold(
-        topBar = { QuestionsAppBar(onUpPress = onUpPress) },
+        topBar = {
+            QuestionsAppBar(
+                info = info,
+                onUpPress = onUpPress,
+                onPageChanged = { newPage ->
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(newPage)
+                    }
+                })
+        },
         content = { padding ->
             QuestionsPager(
                 state = state,
+                pagerState = pagerState,
                 modifier = Modifier.padding(padding),
                 onSubmitQuestion,
                 onRetryClick,
@@ -90,9 +109,11 @@ fun QuestionsContent(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun QuestionsPager(
     state: QuestionsScreenState,
+    pagerState: PagerState = rememberPagerState(),
     modifier: Modifier = Modifier,
     onSubmitQuestion: (SubmitQuestion) -> Unit,
     onRetryClick: (SubmitQuestion) -> Unit = {},
@@ -106,39 +127,24 @@ fun QuestionsPager(
                 .padding(16.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        HorizontalPager(
+        QuestionsHorizontalPager(
             question = state.questions,
+            pagerState = pagerState,
             onSubmitQuestion = onSubmitQuestion,
             onRetryClick = onRetryClick
         )
     }
 }
 
-@SuppressLint("UnrememberedMutableState")
-@Preview
-@Composable
-fun PreviewHorizontalPager() {
-    val list = mutableStateListOf(
-        QuestionState(question = Question(1, "test1")),
-        QuestionState(question = Question(2, "test2")),
-    )
-
-    XMTechnicalAssignmentTheme {
-        HorizontalPager(list)
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HorizontalPager(
+fun QuestionsHorizontalPager(
     question: SnapshotStateList<QuestionState>,
+    pagerState: PagerState,
     modifier: Modifier = Modifier,
     onSubmitQuestion: (SubmitQuestion) -> Unit = {},
     onRetryClick: (SubmitQuestion) -> Unit = {},
 ) {
-    val pagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
-
     Column(modifier = modifier) {
         HorizontalPager(
             pageCount = question.size,
@@ -146,13 +152,6 @@ fun HorizontalPager(
         ) { page ->
             DisplayQuestion(question[page], onSubmitQuestion, onRetryClick)
         }
-
-//        LaunchedEffect(pagerState) {
-//            snapshotFlow { pagerState.currentPage }
-//                .collect { currentPage ->
-//                    pagerState.animateScrollToPage(currentPage)
-//                }
-//        }
     }
 }
 
