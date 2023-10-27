@@ -11,18 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.presentation.component.FailureContent
 import com.example.xmtechnicalassignment.presentation.component.SuccessContent
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Preview
 @Composable
 fun PreviewMainScreenNone() {
     XMTechnicalAssignmentTheme {
-        MainContent(QuestionsState.None)
+        MainContent(MainState())
     }
 }
 
@@ -30,7 +31,7 @@ fun PreviewMainScreenNone() {
 @Composable
 fun PreviewMainScreenError() {
     XMTechnicalAssignmentTheme {
-        MainContent(QuestionsState.Error)
+        MainContent(MainState(UiStatus.Error))
     }
 }
 
@@ -38,7 +39,7 @@ fun PreviewMainScreenError() {
 @Composable
 fun PreviewMainScreenLoading() {
     XMTechnicalAssignmentTheme {
-        MainContent(QuestionsState.Loading)
+        MainContent(MainState(UiStatus.Loading))
     }
 }
 
@@ -46,18 +47,19 @@ fun PreviewMainScreenLoading() {
 @Composable
 fun PreviewMainScreenEmpty() {
     XMTechnicalAssignmentTheme {
-        MainContent(QuestionsState.Empty)
+        MainContent(MainState(UiStatus.Empty))
     }
 }
 
 @Composable
 fun MainScreen(onOpenQuestions: () -> Unit) {
     val viewModel: MainViewModel = viewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsState()
 
-    if (state == QuestionsState.Success) {
-        onOpenQuestions.invoke()
-        viewModel.setNoneState()
+    viewModel.collectSideEffect {
+        when (it) {
+            is MainSideEffect.OpenQuestions -> onOpenQuestions.invoke()
+        }
     }
 
     MainContent(
@@ -69,26 +71,25 @@ fun MainScreen(onOpenQuestions: () -> Unit) {
 
 @Composable
 fun MainContent(
-    state: QuestionsState,
+    state: MainState,
     onStartSurveyClick: () -> Unit = {},
     onRefreshClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    when (state) {
-        QuestionsState.Empty -> DefaultContent(
+    when (state.status) {
+        UiStatus.Empty -> DefaultContent(
             showSuccessText = stringResource(R.string.main_empty_message),
             onStartSurveyClick = onStartSurveyClick
         )
 
-        QuestionsState.Error -> DefaultContent(
+        UiStatus.Error -> DefaultContent(
             showError = true,
             onStartSurveyClick = onStartSurveyClick,
             onRefreshClick = onRefreshClick
         )
 
-        QuestionsState.Loading -> LoadingContent()
-        QuestionsState.None -> DefaultContent(onStartSurveyClick = onStartSurveyClick)
-        QuestionsState.Success -> Unit // we handle it before this call
+        UiStatus.Loading -> LoadingContent()
+        null -> DefaultContent(onStartSurveyClick = onStartSurveyClick)
     }
 }
 

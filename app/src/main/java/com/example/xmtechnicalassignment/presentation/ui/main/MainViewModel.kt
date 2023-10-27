@@ -1,59 +1,45 @@
 package com.example.xmtechnicalassignment.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.xmtechnicalassignment.data.di.dataComponent
 import com.example.xmtechnicalassignment.data.repository.QuestionsRepository
 import com.example.xmtechnicalassignment.presentation.component.MESSAGE_DELAY
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 
 class MainViewModel(
     private val questionsRepository: QuestionsRepository = dataComponent().questionsRepository
-) : ViewModel() {
+) : ContainerHost<MainState, MainSideEffect>, ViewModel() {
 
-    private val _state = MutableStateFlow<QuestionsState>(QuestionsState.None)
-    val state = _state.asStateFlow()
+    override val container = container<MainState, MainSideEffect>(
+        MainState()
+    )
 
     fun onStartSurveyClick() {
-        viewModelScope.launch {
-            _state.emit(QuestionsState.Loading)
+        intent {
+            reduce { state.copy(status = UiStatus.Loading) }
             val result = questionsRepository.getQuestions()
 
             if (result.isSuccess) {
                 val questions = result.getOrThrow()
 
-                when {
-                    questions.isEmpty() -> {
-                        _state.emit(QuestionsState.Empty)
-                        delay(MESSAGE_DELAY)
-                        _state.emit(QuestionsState.None)
-                    }
-
-                    else -> _state.emit(QuestionsState.Success)
+                if (questions.isEmpty()) {
+                    reduce { state.copy(status = UiStatus.Empty) }
+                    delay(MESSAGE_DELAY)
+                    reduce { state.copy(status = null) }
+                } else {
+                    postSideEffect(MainSideEffect.OpenQuestions)
+                    reduce { state.copy(status = null) }
                 }
             } else {
-                _state.emit(QuestionsState.Error)
+                reduce { state.copy(status = UiStatus.Error) }
                 delay(MESSAGE_DELAY)
-                _state.emit(QuestionsState.None)
+                reduce { state.copy(status = null) }
             }
         }
     }
-
-    fun setNoneState() {
-        viewModelScope.launch {
-            _state.emit(QuestionsState.None)
-        }
-    }
-
-}
-
-sealed interface QuestionsState {
-    object None : QuestionsState
-    object Loading : QuestionsState
-    object Error : QuestionsState
-    object Empty : QuestionsState
-    object Success : QuestionsState
 }
