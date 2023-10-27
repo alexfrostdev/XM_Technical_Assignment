@@ -6,9 +6,12 @@
     <string name="main_empty_message">There are no questions</string>
 
     <string name="questions_back">Back</string>
-    <string name="questions_previous">Previous</string>
+    <string name="questions_previous">Prev</string>
     <string name="questions_next">Next</string>
     <string name="questions_question_template">Question %s</string>
+    <string name="questions_submit">Submit</string>
+    <string name="questions_already_submitted">Already submitted</string>
+    <string name="questions_submitted_template">Questions submitted: %s</string>
 
     <string name="message_success">Success!</string>
     <string name="message_failure">Failure!</string>

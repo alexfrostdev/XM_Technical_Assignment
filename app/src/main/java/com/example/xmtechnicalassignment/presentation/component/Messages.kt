@@ -48,7 +48,7 @@ fun PreviewFailureContent() {
 }
 
 @Composable
-fun FailureContent(onRefreshClick: () -> Unit, modifier: Modifier = Modifier) {
+fun FailureContent(onRetryClick: () -> Unit, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = ErrorColor
@@ -60,7 +60,7 @@ fun FailureContent(onRefreshClick: () -> Unit, modifier: Modifier = Modifier) {
         ) {
             Text(text = stringResource(R.string.message_failure))
             Spacer(Modifier.size(height = 0.dp, width = 0.dp))
-            Button(onClick = { onRefreshClick() }, Modifier.weight(1f, false)) {
+            Button(onClick = { onRetryClick() }, Modifier.weight(1f, false)) {
                 Text(stringResource(R.string.message_retry))
             }
         }

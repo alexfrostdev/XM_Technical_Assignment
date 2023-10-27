@@ -12,3 +12,5 @@ val Pink40 = Color(0xFF7D5260)
 
 val SuccessColor = Color(0xFF3EC995)
 val ErrorColor = Color(0xFFFF6B5A)
+
+val QuestionBackgroundColor = Color(0xFFE5E5E8)

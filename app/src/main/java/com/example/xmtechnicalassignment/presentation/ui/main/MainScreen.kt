@@ -16,6 +16,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.presentation.component.FailureContent
+import com.example.xmtechnicalassignment.presentation.component.LoadingContent
 import com.example.xmtechnicalassignment.presentation.component.SuccessContent
 import com.example.xmtechnicalassignment.presentation.navigation.Actions
 import com.example.xmtechnicalassignment.presentation.navigation.Screen
@@ -62,14 +63,14 @@ fun NavGraphBuilder.addHome(actions: Actions) {
 
         viewModel.collectSideEffect {
             when (it) {
-                is MainSideEffect.OpenQuestions -> actions.openQuestions.invoke()
+                MainSideEffect.OpenQuestions -> actions.openQuestions.invoke()
             }
         }
 
         MainContent(
             state = state,
             onStartSurveyClick = viewModel::onStartSurveyClick,
-            onRefreshClick = viewModel::onStartSurveyClick
+            onRetryClick = viewModel::onStartSurveyClick
         )
     }
 }
@@ -78,7 +79,7 @@ fun NavGraphBuilder.addHome(actions: Actions) {
 fun MainContent(
     state: MainState,
     onStartSurveyClick: () -> Unit = {},
-    onRefreshClick: () -> Unit = {},
+    onRetryClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     when (state.status) {
@@ -90,7 +91,7 @@ fun MainContent(
         UiStatus.Error -> DefaultContent(
             showError = true,
             onStartSurveyClick = onStartSurveyClick,
-            onRefreshClick = onRefreshClick
+            onRetryClick = onRetryClick
         )
 
         UiStatus.Loading -> LoadingContent()
@@ -103,7 +104,7 @@ fun DefaultContent(
     showError: Boolean = false,
     showSuccessText: String = "",
     onStartSurveyClick: () -> Unit = {},
-    onRefreshClick: () -> Unit = {},
+    onRetryClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
 
@@ -113,7 +114,7 @@ fun DefaultContent(
     ) {
 
         if (showError) {
-            FailureContent(onRefreshClick)
+            FailureContent(onRetryClick)
         }
         if (showSuccessText.isNotEmpty()) {
             SuccessContent(text = showSuccessText)
@@ -124,18 +125,5 @@ fun DefaultContent(
         Button(onClick = { onStartSurveyClick() }) {
             Text(stringResource(R.string.main_start_survey))
         }
-    }
-}
-
-@Composable
-fun LoadingContent(modifier: Modifier = Modifier) {
-
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier.width(64.dp)
-        )
     }
 }

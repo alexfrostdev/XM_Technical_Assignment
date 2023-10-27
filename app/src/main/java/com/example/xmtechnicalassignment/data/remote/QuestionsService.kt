@@ -13,5 +13,5 @@ interface QuestionsService {
     suspend fun getQuestions(): List<Question>
 
     @POST("/question/submit")
-    suspend fun submitQuestion(@Body item: SubmitQuestion): Response<Any>
+    suspend fun submitQuestion(@Body item: SubmitQuestion): Response<Unit>
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
 
@@ -43,11 +44,11 @@ fun QuestionsAppBar(onUpPress: () -> Unit) {
             }
         },
         actions = {
-            IconButton(onClick = {}, Modifier.padding(horizontal = 8.dp)) {
-                Text(text = stringResource(R.string.questions_previous), maxLines = 1)
+            IconButton(onClick = {}, Modifier.padding(horizontal = 0.dp)) {
+                Text(text = stringResource(R.string.questions_previous), fontSize = 12.sp, maxLines = 1)
             }
-            IconButton(onClick = {}, Modifier.padding(horizontal = 8.dp)) {
-                Text(text = stringResource(R.string.questions_next), maxLines = 1)
+            IconButton(onClick = {}, Modifier.padding(horizontal = 0.dp)) {
+                Text(text = stringResource(R.string.questions_next), fontSize = 12.sp, maxLines = 1)
             }
         })
 }
