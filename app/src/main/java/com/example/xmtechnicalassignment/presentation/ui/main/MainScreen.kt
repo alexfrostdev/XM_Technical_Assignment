@@ -12,9 +12,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.presentation.component.FailureContent
 import com.example.xmtechnicalassignment.presentation.component.SuccessContent
+import com.example.xmtechnicalassignment.presentation.navigation.Actions
+import com.example.xmtechnicalassignment.presentation.navigation.Screen
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -51,22 +55,23 @@ fun PreviewMainScreenEmpty() {
     }
 }
 
-@Composable
-fun MainScreen(onOpenQuestions: () -> Unit) {
-    val viewModel: MainViewModel = viewModel()
-    val state by viewModel.collectAsState()
+fun NavGraphBuilder.addHome(actions: Actions) {
+    composable(Screen.Home.route) {
+        val viewModel: MainViewModel = viewModel()
+        val state by viewModel.collectAsState()
 
-    viewModel.collectSideEffect {
-        when (it) {
-            is MainSideEffect.OpenQuestions -> onOpenQuestions.invoke()
+        viewModel.collectSideEffect {
+            when (it) {
+                is MainSideEffect.OpenQuestions -> actions.openQuestions.invoke()
+            }
         }
-    }
 
-    MainContent(
-        state = state,
-        onStartSurveyClick = viewModel::onStartSurveyClick,
-        onRefreshClick = viewModel::onStartSurveyClick
-    )
+        MainContent(
+            state = state,
+            onStartSurveyClick = viewModel::onStartSurveyClick,
+            onRefreshClick = viewModel::onStartSurveyClick
+        )
+    }
 }
 
 @Composable

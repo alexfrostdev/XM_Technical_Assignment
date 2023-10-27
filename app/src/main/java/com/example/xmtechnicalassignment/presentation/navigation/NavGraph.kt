@@ -5,10 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.xmtechnicalassignment.presentation.ui.main.MainScreen
-import com.example.xmtechnicalassignment.presentation.ui.questions.QuestionsScreen
+import com.example.xmtechnicalassignment.presentation.ui.main.addHome
+import com.example.xmtechnicalassignment.presentation.ui.questions.addQuestions
 
 /**
  * Navigation Graph to control the navigation.
@@ -23,16 +22,8 @@ fun NavGraph(startDestination: String = Screen.Home.route) {
     val actions = remember(navController) { Actions(navController) }
 
     NavHost(navController = navController, startDestination = startDestination) {
-
-        composable(Screen.Home.route) {
-            MainScreen(onOpenQuestions = actions.openQuestions)
-        }
-
-        composable(Screen.Questions.route) {
-            QuestionsScreen(
-                onUpPress = actions.popBackStack,
-            )
-        }
+        addHome(actions)
+        addQuestions(actions)
     }
 }
 

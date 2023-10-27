@@ -5,8 +5,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import com.example.xmtechnicalassignment.presentation.component.QuestionsAppBar
+import com.example.xmtechnicalassignment.presentation.navigation.Actions
+import com.example.xmtechnicalassignment.presentation.navigation.Screen
+import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
 
 @Preview("Empty")
 @Composable
@@ -28,16 +32,17 @@ fun PreviewQuestionsScreen() {
     }
 }
 
-@Composable
-fun QuestionsScreen(onUpPress: () -> Unit) {
-    val viewModel = viewModel { QuestionsViewModel() }
+fun NavGraphBuilder.addQuestions(actions: Actions) {
+    composable(Screen.Questions.route) {
+        val viewModel = viewModel { QuestionsViewModel() }
 
-    val state = viewModel.questionsState
+        val state = viewModel.questionsState
 
-    QuestionsContent(
-        state,
-        onUpPress = onUpPress,
-    )
+        QuestionsContent(
+            state,
+            onUpPress = actions.popBackStack,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
