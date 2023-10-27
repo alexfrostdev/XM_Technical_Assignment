@@ -52,7 +52,7 @@ class QuestionsViewModel(
                         answer = submitQuestion.answer,
                         submittedAnswer = submitQuestion.answer,
                     )
-                    state
+                    state.copy(submittedQuestions = state.submittedQuestions + 1)
                 }
                 delay(MESSAGE_DELAY)
                 reduceQuestions(index, null)

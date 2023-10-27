@@ -1,5 +1,6 @@
 package com.example.xmtechnicalassignment.presentation.ui.questions
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,9 +8,15 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -27,25 +34,20 @@ import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssign
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-//@Preview
-//@Composable
-//fun PreviewEmptyQuestionsScreen() {
-//    val state = QuestionsState.Loading
-//
-//    XMTechnicalAssignmentTheme {
-//        QuestionsContent(state, {})
-//    }
-//}
-//
-//@Preview
-//@Composable
-//fun PreviewQuestionsScreen() {
-//    val state = QuestionsState.Loading
-//
-//    XMTechnicalAssignmentTheme {
-//        QuestionsContent(state, {})
-//    }
-//}
+@SuppressLint("UnrememberedMutableState")
+@Preview
+@Composable
+fun PreviewQuestionsScreen() {
+    val list = mutableStateListOf(
+        QuestionState(question = Question(1, "test1")),
+        QuestionState(question = Question(2, "test2")),
+    )
+    val state = QuestionsScreenState(questions = list, submittedQuestions = 2)
+
+    XMTechnicalAssignmentTheme {
+        QuestionsContent(state, {}, {})
+    }
+}
 
 fun NavGraphBuilder.addQuestions(actions: Actions) {
     composable(Screen.Questions.route) {
@@ -95,13 +97,28 @@ fun QuestionsPager(
     onSubmitQuestion: (SubmitQuestion) -> Unit,
     onRetryClick: (SubmitQuestion) -> Unit = {},
 ) {
-    HorizontalPager(state.questions, modifier = modifier, onSubmitQuestion, onRetryClick)
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(R.string.questions_submitted_template, state.submittedQuestions),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        HorizontalPager(
+            question = state.questions,
+            onSubmitQuestion = onSubmitQuestion,
+            onRetryClick = onRetryClick
+        )
+    }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 fun PreviewHorizontalPager() {
-    val list = listOf(
+    val list = mutableStateListOf(
         QuestionState(question = Question(1, "test1")),
         QuestionState(question = Question(2, "test2")),
     )
@@ -114,7 +131,7 @@ fun PreviewHorizontalPager() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HorizontalPager(
-    question: List<QuestionState>,
+    question: SnapshotStateList<QuestionState>,
     modifier: Modifier = Modifier,
     onSubmitQuestion: (SubmitQuestion) -> Unit = {},
     onRetryClick: (SubmitQuestion) -> Unit = {},

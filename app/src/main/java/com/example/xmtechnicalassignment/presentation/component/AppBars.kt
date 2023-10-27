@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.xmtechnicalassignment.R
+import com.example.xmtechnicalassignment.presentation.ui.theme.QuestionBackgroundColor
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
 
 
@@ -35,6 +36,7 @@ fun QuestionsAppBar(onUpPress: () -> Unit) {
         title = {
             Text(stringResource(R.string.questions_question_template, ""))
         },
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = QuestionBackgroundColor),
         navigationIcon = {
             IconButton(onClick = onUpPress) {
                 Icon(
