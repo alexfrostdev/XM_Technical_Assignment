@@ -3,6 +3,7 @@
 
     <string name="main_welcome">Welcome</string>
     <string name="main_start_survey">Start survey</string>
+    <string name="main_empty_message">There are no questions</string>
 
     <string name="questions_back">Back</string>
     <string name="questions_previous">Previous</string>

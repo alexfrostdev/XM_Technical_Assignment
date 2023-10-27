@@ -12,13 +12,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class DataModule(val context: Context) : DataComponent {
 
-    override val retrofit: Retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("https://xm-assignment.web.app")
         .addConverterFactory(GsonConverterFactory.create())
         .client(getHttpClient())
         .build()
 
-    override val questionsServiceImp: QuestionsService = retrofit.create(QuestionsService::class.java)
+    private val questionsServiceImp: QuestionsService = retrofit.create(QuestionsService::class.java)
 
     override val questionsRepository: QuestionsRepository = QuestionsRepositoryImp(questionsServiceImp)
 

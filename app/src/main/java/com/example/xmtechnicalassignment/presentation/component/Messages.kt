@@ -14,23 +14,26 @@ import com.example.xmtechnicalassignment.R
 import com.example.xmtechnicalassignment.presentation.ui.theme.ErrorColor
 import com.example.xmtechnicalassignment.presentation.ui.theme.SuccessColor
 import com.example.xmtechnicalassignment.presentation.ui.theme.XMTechnicalAssignmentTheme
+import kotlin.time.Duration.Companion.seconds
+
+val MESSAGE_DELAY = 4.seconds
 
 @Preview
 @Composable
 fun PreviewSuccessContent() {
     XMTechnicalAssignmentTheme {
-        SuccessContent()
+        SuccessContent(stringResource(R.string.message_success))
     }
 }
 
 @Composable
-fun SuccessContent(modifier: Modifier = Modifier) {
+fun SuccessContent(text: String, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = SuccessColor
     ) {
         Text(
-            text = stringResource(R.string.message_success),
+            text = text,
             Modifier.padding(horizontal = 16.dp, vertical = 32.dp)
         )
     }

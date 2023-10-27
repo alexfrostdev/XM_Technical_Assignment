@@ -26,7 +26,7 @@ fun NavGraph(startDestination: String = "home") {
     NavHost(navController = navController, startDestination = startDestination) {
 
         composable("home") {
-            MainScreen(onStartSurveyClick = actions.openQuestions)
+            MainScreen(onOpenQuestions = actions.openQuestions)
         }
 
         composable("questions") {

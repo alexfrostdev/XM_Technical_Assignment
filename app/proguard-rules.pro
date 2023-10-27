@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# workaroud to fix R8.full for retrofit
+
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
