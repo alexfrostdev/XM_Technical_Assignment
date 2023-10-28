@@ -8,7 +8,7 @@ import com.example.xmtechnicalassignment.data.remote.entity.SubmitQuestion
 
 interface QuestionsRepository {
     val questions: ArrayList<Question>
-    suspend fun getQuestions(): Result<List<Question>>
+    suspend fun loadQuestions(): Result<List<Question>>
     suspend fun submitQuestion(submitQuestion: SubmitQuestion): Result<Boolean>
 }
 
@@ -16,7 +16,7 @@ class QuestionsRepositoryImp(private val service: QuestionsService) : QuestionsR
 
     override val questions: ArrayList<Question> = ArrayList()
 
-    override suspend fun getQuestions(): Result<List<Question>> {
+    override suspend fun loadQuestions(): Result<List<Question>> {
         questions.clear()
         return kotlin.runCatching {
             service.getQuestions().also {

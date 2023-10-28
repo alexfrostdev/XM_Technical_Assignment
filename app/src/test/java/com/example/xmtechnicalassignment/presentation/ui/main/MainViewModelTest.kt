@@ -26,7 +26,7 @@ class MainViewModelTest {
     @Test
     fun `WHEN repo returns empty THEN get Empty result`() = runTest {
         //Setup
-        coEvery { questionsRepository.getQuestions() } returns Result.success(emptyList())
+        coEvery { questionsRepository.loadQuestions() } returns Result.success(emptyList())
 
         mainViewModel.test(this, MainState()) {
             expectInitialState()
@@ -42,7 +42,7 @@ class MainViewModelTest {
     fun `WHEN repo returns error THEN get Error result`() = runTest {
 
         //Setup
-        coEvery { questionsRepository.getQuestions() } returns Result.failure(IOException())
+        coEvery { questionsRepository.loadQuestions() } returns Result.failure(IOException())
 
 
         mainViewModel.test(this, MainState()) {
@@ -60,7 +60,7 @@ class MainViewModelTest {
 
         //Setup
         val list = listOf(Question(1, "test"))
-        coEvery { questionsRepository.getQuestions() } returns Result.success(list)
+        coEvery { questionsRepository.loadQuestions() } returns Result.success(list)
 
 
         mainViewModel.test(this, MainState()) {

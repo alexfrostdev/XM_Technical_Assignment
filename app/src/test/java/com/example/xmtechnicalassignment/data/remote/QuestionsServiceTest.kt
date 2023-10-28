@@ -3,9 +3,13 @@ package com.example.xmtechnicalassignment.data.remote
 import com.example.xmtechnicalassignment.data.remote.entity.Question
 import com.example.xmtechnicalassignment.data.remote.entity.SubmitQuestion
 import kotlinx.coroutines.runBlocking
+import okhttp3.mockwebserver.MockResponse
+import okio.buffer
+import okio.source
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 class QuestionsServiceTest : ApiTest() {
@@ -36,8 +40,8 @@ class QuestionsServiceTest : ApiTest() {
         //Setup
         val expected: String = getRequestString("post-submit-question-body.json")
         val submitQuestion = SubmitQuestion(id = 1,"test")
-        //any response
-        enqueueResponse("test-response.json")
+        //empty response
+        mockWebServer.enqueue(MockResponse())
 
         // Run the test
         val body = runBlocking {

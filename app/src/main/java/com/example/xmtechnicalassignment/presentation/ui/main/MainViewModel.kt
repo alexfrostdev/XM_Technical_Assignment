@@ -22,7 +22,7 @@ class MainViewModel(
     fun onStartSurveyClick() {
         intent {
             reduce { state.copy(status = UiStatus.Loading) }
-            val result = questionsRepository.getQuestions()
+            val result = questionsRepository.loadQuestions()
 
             if (result.isSuccess) {
                 val questions = result.getOrThrow()

@@ -1,5 +1,6 @@
 package com.example.xmtechnicalassignment.presentation.ui.questions
 
+import androidx.annotation.OpenForTesting
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import com.example.xmtechnicalassignment.data.di.dataComponent
@@ -23,6 +24,11 @@ class QuestionsViewModel(
     )
 
     init {
+        checkQuestions()
+    }
+
+    @OpenForTesting
+    fun checkQuestions() {
         if (questionsRepository.questions.isEmpty()) {
             intent {
                 postSideEffect(QuestionsSideEffect.CloseQuestions)
